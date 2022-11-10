@@ -3,7 +3,7 @@ This repository contains the files and summary of results for the numerical Benc
 
 The comparison of results is done using the commercial tools Siemens PSS®E and PSCAD™/EMTDC™ against the Julia toolbox [PowerSimulationsDynamics](https://github.com/NREL-SIIP/PowerSimulationsDynamics.jl) using numerical solvers provided by [Sundials](https://github.com/SciML/Sundials.jl) and [DifferentialEquations.jl](https://github.com/SciML/DifferentialEquations.jl).
 
-## PSS/E Results
+## PSS®E Results
 
 The positive-sequence validation is done in the [Reduced WECC 240-Bus System](https://ieeexplore.ieee.org/document/9299666), a system with 2420 dynamic states and 506 algebraic states. In total, 195 generator trips and 329 line trips simulations were performed, and the Root Mean Square Error (RMSE) was compared against the tools PSS/E and PowerSimulationsDynamics.jl. The following table compares the RMSE across 311,780 traces of bus voltages and angles.
 
@@ -35,3 +35,7 @@ In addition, the Julia toolbox allows the usage of different solvers at differen
 |     IDA Dense    |                  63.382                  |                   30.903                   |                   27.986                   |
 |  IDA LAPACKDENSE |                  48.532                  |                   16.507                   |                   14.429                   |
 |      IDA KLU     |                  26.131                  |                   14.465                   |                   13.088                   |
+
+## PSCAD™ Results
+
+Work in progress
