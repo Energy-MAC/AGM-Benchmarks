@@ -18,7 +18,7 @@ The positive-sequence validation is done in the [Reduced WECC 240-Bus System](ht
 
 In addition, the Julia toolbox allows the usage of different solvers at different tolerances. The following table compares the simulation times for the base case:
 
-|      Solver      | Time [s] abstol/reltol = 10<sup>-9</sup> | Time [s] abstol/reltol = 10<sup>-6</sup> | Time [s] abstol/reltol = 10<sup>-3</sup> |
+|      Solver      | Time [s] for abstol/reltol = 10<sup>-9</sup> | Time [s] for abstol/reltol = 10<sup>-6</sup> | Time [s] for abstol/reltol = 10<sup>-3</sup> |
 |:----------------:|:----------------------------------------:|:------------------------------------------:|:------------------------------------------:|
 |     ROS34PW1b    |                  Failed                  |                   19.221                   |                    5.335                   |
 |     ROS34PW1a    |                  Failed                  |                   19.301                   |                    5.369                   |
