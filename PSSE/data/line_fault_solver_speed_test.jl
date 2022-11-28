@@ -146,4 +146,5 @@ for solver in (
         push!(line_trip_speed_results,
         (solver_name, linear_solver, tol, solve_time)
         )
+        end
 end
