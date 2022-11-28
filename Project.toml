@@ -1,0 +1,12 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e"
+KLU = "ef3ab10e-7fda-4108-b977-705223b18434"
+LinearSolve = "7ed4a6bd-45f5-4d41-b270-4a48e9bafcae"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+PowerFlows = "94fada2c-fd9a-4e89-8d82-81405f5cb4f6"
+PowerSimulationsDynamics = "398b2ede-47ed-4edc-b52e-69e4a48b4336"
+PowerSystems = "bcd98974-b02a-5e2f-9ee0-a103f5c450dd"
+Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
