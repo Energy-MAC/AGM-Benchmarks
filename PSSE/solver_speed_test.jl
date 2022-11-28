@@ -1,3 +1,6 @@
+using Pkg
+Pkg.instantiate(".")
+
 using PowerSystems
 using PowerSimulationsDynamics
 using OrdinaryDiffEq
