@@ -1,5 +1,5 @@
 using Pkg
-Pkg.instantiate(".")
+Pkg.instantiate()
 
 using PowerSystems
 using PowerSimulationsDynamics
