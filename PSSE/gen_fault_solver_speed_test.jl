@@ -86,13 +86,9 @@ for solver in (
         # Rosenbrock
         RosShamp4(),
         Rodas4(),
-        Rodas4(linsolve = KLUFactorization()),
         Rodas4P(),
-        Rodas4P(linsolve = KLUFactorization()),
         Rodas5(),
-        Rodas5(linsolve = KLUFactorization()),
         Rodas5P(),
-        Rodas5P(linsolve = KLUFactorization()),
         # Rosenbrock W
         Rosenbrock23(),
         Rosenbrock32(),
@@ -115,14 +111,6 @@ for solver in (
         QNDF(),
         QBDF(),
         FBDF(),
-        QNDF(linsolve = KLUFactorization()),
-        QBDF1(linsolve = KLUFactorization()),
-        ABDF2(linsolve = KLUFactorization()),
-        QNDF2(linsolve = KLUFactorization()),
-        QBDF2(linsolve = KLUFactorization()),
-        QNDF(linsolve = KLUFactorization()),
-        QBDF(linsolve = KLUFactorization()),
-        FBDF(linsolve = KLUFactorization()),
         ), tol in (1e-6, 1e-8, 1e-10)
         solve_time = "failed"
         try
