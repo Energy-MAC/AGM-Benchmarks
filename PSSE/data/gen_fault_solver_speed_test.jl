@@ -80,7 +80,7 @@ sim = Simulation(
         sim_config...
         )
 
-execute!(sim, Rodas4())
+execute!(sim, Rodas4(); enable_progress_bar = false)
 
 for solver in (
         # Rosenbrock
