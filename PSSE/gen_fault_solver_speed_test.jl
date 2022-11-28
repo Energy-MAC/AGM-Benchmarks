@@ -39,7 +39,7 @@ sim_ida = Simulation(
 execute!(sim_ida, IDA(); enable_progress_bar = false)
 results = read_results(sim_ida)
 
-line_trip_speed_results = DataFrame(solver = String[],
+gen_trip_speed_results = DataFrame(solver = String[],
                                     LinearSolver = String[],
                                     tol = Float64[],
                                     sol_time = String[])
@@ -64,7 +64,7 @@ for solver in (IDA(), IDA(linear_solver = :LapackDense), IDA(linear_solver = :KL
         finally
                 solver_name, solver_meta = split("$(solver)", "{")
                 linear_solver = split(solver_meta, ",")[1]
-        push!(line_trip_speed_results,
+        push!(gen_trip_speed_results,
               (solver_name, linear_solver, tol, solve_time)
         )
         end
@@ -131,7 +131,7 @@ for solver in (
         finally
                 solver_name, solver_meta = split("$(solver)", "{")
                 linear_solver = split(solver_meta, ",")[1]
-        push!(line_trip_speed_results,
+        push!(gen_trip_speed_results,
         (solver_name, linear_solver, tol, solve_time)
         )
         end
