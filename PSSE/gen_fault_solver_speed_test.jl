@@ -136,3 +136,14 @@ for solver in (
         )
         end
 end
+
+readme_text = read("PSSE/README.md", String)
+
+val_ini = findnext("## Solver comparison gen trip", readme_text, 1)[end]
+
+open("PSSE/README.md", "w") do f
+        write(f, readme_text[1:val_ini])
+        write(f, "\n\n")
+        pretty_table(f, gen_trip_speed_results, tf = tf_markdown)
+        write(f, "\n")
+end
