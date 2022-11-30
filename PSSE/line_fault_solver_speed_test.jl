@@ -45,7 +45,7 @@ line_trip_speed_results = DataFrame(solver = String[],
                                     tol = Float64[],
                                     sol_time = String[])
 
-for solver in (IDA(), IDA(linear_solver = :LapackDense), IDA(linear_solver = :KLU)), tol in (1e-6, 1e-8, 1e-10)
+for solver in (IDA(), IDA(linear_solver = :LapackDense), IDA(linear_solver = :KLU)), tol in (1e-4, 1e-6, 1e-8, 1e-10)
         solve_time = "failed"
         try
         sim_ida = Simulation(
@@ -112,7 +112,7 @@ for solver in (
         QNDF(),
         QBDF(),
         FBDF(),
-        ), tol in (1e-6, 1e-8, 1e-10)
+        ), tol in (1e-4, 1e-6, 1e-8, 1e-10)
         solve_time = "failed"
         try
         sim = Simulation(
