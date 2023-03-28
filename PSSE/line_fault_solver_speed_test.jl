@@ -1,6 +1,6 @@
 using Pkg
 Pkg.instantiate()
-
+using Revise
 using PowerSystems
 using PowerSimulationsDynamics
 using OrdinaryDiffEq
@@ -14,11 +14,13 @@ using DataFrames
 using LinearAlgebra
 using PrettyTables
 
+include("utils.jl")
+
 system = System("PSSE/data/PSCAD_VALIDATION_RAW.raw", "PSSE/data/PSCAD_VALIDATION_DYR.dyr";
 bus_name_formatter = x -> strip(string(x["name"])) * "-" * string(x["index"]), runchecks = false)
 
-for l in get_components(PowerLoad, system)
-    set_model!(l, LoadModels.ConstantImpedance)
+for l in get_components(StandardLoad, system)
+    transform_load_to_constant_impedance(l)
 end
 
 sim_config = Dict{Symbol,Any}(
@@ -27,8 +29,20 @@ sim_config = Dict{Symbol,Any}(
         :system_to_file => false,
 )
 
-# Precompilation run
-sim_ida = Simulation(
+# Get high tolerance results
+sim_diffeq_high_tol = Simulation(
+        MassMatrixModel,
+        system,
+        pwd(),
+        (0.0, 20.0), #time span
+        BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
+        sim_config...
+        )
+
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-6, atol = 1e-10, rtol = 1e-10, enable_progress_bar = false)
+sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
+
+sim_high_tol = Simulation(
         ResidualModel,
         system,
         mktempdir(),
@@ -37,11 +51,11 @@ sim_ida = Simulation(
         sim_config...
         )
 
-execute!(sim_ida, IDA(); enable_progress_bar = false)
-results = read_results(sim_ida)
+execute!(sim_high_tol, IDA(); abstol = 1e-8, reltol = 1e-8, enable_progress_bar = false)
 
 line_trip_speed_results = DataFrame(solver = String[],
                                     LinearSolver = String[],
+                                    error = Float64[],
                                     tol = Float64[],
                                     sol_time = String[])
 
@@ -59,6 +73,7 @@ for solver in (IDA(), IDA(linear_solver = :LapackDense), IDA(linear_solver = :KL
 
         execute!(sim_ida, solver; enable_progress_bar = false, abstol = tol, reltol = tol)
         results = read_results(sim_ida)
+        rmse = get_rmse(sim_diffeq_high_tol_res, results)
         solve_time = "$(results.time_log[:timed_solve_time])"
         catch e
                 @error("meh")
@@ -66,22 +81,11 @@ for solver in (IDA(), IDA(linear_solver = :LapackDense), IDA(linear_solver = :KL
                 solver_name, solver_meta = split("$(solver)", "{")
                 linear_solver = split(solver_meta, ",")[1]
         push!(line_trip_speed_results,
-              (solver_name, linear_solver, tol, solve_time)
+              (solver_name, linear_solver, rmse, tol, solve_time)
         )
         end
 end
 
-# Precompilation run
-sim = Simulation(
-        MassMatrixModel,
-        system,
-        pwd(),
-        (0.0, 20.0), #time span
-        BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
-        sim_config...
-        )
-
-execute!(sim, Rodas4(); enable_progress_bar = false)
 
 for solver in (
         # Rosenbrock
@@ -126,6 +130,7 @@ for solver in (
 
         execute!(sim, solver; enable_progress_bar = false, abstol = tol, reltol = tol)
         results = read_results(sim)
+
         solve_time = "$(results.time_log[:timed_solve_time])"
         catch e
                 @error("meh")
