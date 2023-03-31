@@ -34,12 +34,12 @@ sim_diffeq_high_tol = Simulation(
     MassMatrixModel,
     system,
     pwd(),
-    (0.0, 20.0), #time span
+    (0.0, 10.0), #time span
     GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 0.01, abstol=1e-8, reltol=1e-8,)
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-6, abstol=1e-8, reltol=1e-8,)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 # Precompilation run
@@ -47,7 +47,7 @@ sim_ida = Simulation(
     ResidualModel,
     system,
     mktempdir(),
-    (0.0, 20.0), #time span
+    (0.0, 10.0), #time span
     GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
     sim_config...
 )
@@ -74,7 +74,7 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
             ResidualModel,
             system,
             pwd(),
-            (0.0, 20.0), #time span
+            (0.0, 10.0), #time span
             GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
             sim_config...
         )
@@ -104,7 +104,7 @@ sim = Simulation(
     MassMatrixModel,
     system,
     pwd(),
-    (0.0, 20.0), #time span
+    (0.0, 10.0), #time span
     GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
     sim_config...
 )
@@ -152,7 +152,7 @@ for solver in (
             MassMatrixModel,
             system,
             pwd(),
-            (0.0, 20.0), #time span
+            (0.0, 10.0), #time span
             GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
             sim_config...
         )

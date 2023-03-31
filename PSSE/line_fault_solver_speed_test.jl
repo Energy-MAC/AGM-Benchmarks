@@ -34,19 +34,19 @@ sim_diffeq_high_tol = Simulation(
     MassMatrixModel,
     system,
     pwd(),
-    (0.0, 20.0), #time span
+    (0.0, 10.0), #time span
     BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); abstol=1e-8, reltol=1e-8, enable_progress_bar=false)
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-6, abstol=1e-8, reltol=1e-8, enable_progress_bar=false)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 sim_high_tol = Simulation(
     ResidualModel,
     system,
     mktempdir(),
-    (0.0, 20.0), #time span
+    (0.0, 10.0), #time span
     BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
     sim_config...
 )
@@ -73,7 +73,7 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
             ResidualModel,
             system,
             pwd(),
-            (0.0, 20.0), #time span
+            (0.0, 10.0), #time span
             BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
             sim_config...
         )
@@ -103,7 +103,7 @@ sim = Simulation(
     MassMatrixModel,
     system,
     pwd(),
-    (0.0, 20.0), #time span
+    (0.0, 10.0), #time span
     BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
     sim_config...
 )
@@ -150,7 +150,7 @@ for solver in (
             MassMatrixModel,
             system,
             pwd(),
-            (0.0, 20.0), #time span
+            (0.0, 10.0), #time span
             BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
             sim_config...
         )
