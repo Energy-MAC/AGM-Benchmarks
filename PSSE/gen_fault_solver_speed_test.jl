@@ -39,7 +39,7 @@ sim_diffeq_high_tol = Simulation(
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-6, abstol=1e-8, reltol=1e-8,)
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-4, abstol=1e-8, reltol=1e-8,)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 # Precompilation run
@@ -63,7 +63,7 @@ gen_trip_speed_results = DataFrame(solver=String[],
     step_count=Int[],
     max_error_state=Tuple{String,Symbol}[],)
 
-for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10)
+for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7)
     solve_time = "failed"
     solver_name, solver_meta = split("$(solver)", "{")
     linear_solver = split(solver_meta, ",")[1]
@@ -141,7 +141,7 @@ for solver in (
         QNDF(),
         QBDF(),
         FBDF(),
-    ), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10)
+    ), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7)
     solve_time = "failed"
     solver_name, solver_meta = split("$(solver)", "{")
     linear_solver = split(solver_meta, ",")[1]
