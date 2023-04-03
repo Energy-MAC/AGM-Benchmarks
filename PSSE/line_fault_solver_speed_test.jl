@@ -38,7 +38,7 @@ sim_diffeq_high_tol = Simulation(
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-4, abstol=1e-8, reltol=1e-8, enable_progress_bar=false)
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-3, abstol=1e-8, reltol=1e-8, enable_progress_bar=false)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 sim_high_tol = Simulation(
@@ -86,12 +86,12 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
         ti, vali = get_state_series(sim_diffeq_high_tol_res, state_error)
         df_res = DataFrame(t=tr, state=valr)
         df_base = DataFrame(t=ti, state=vali)
-        CSV.write("res_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_res)
-        CSV.write("base_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_base)
+        CSV.write("res_line_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_res)
+        CSV.write("base_line_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_base)
     catch e
         @error("meh")
     finally
-        push!(gen_trip_speed_results,
+        push!(line_trip_speed_results,
             (solver_name, linear_solver, max_error, rmse, tol, solve_time, step_count, state_error)
         )
     end
@@ -111,7 +111,6 @@ execute!(sim, Rodas4(); enable_progress_bar=false)
 
 for solver in (
         # Rosenbrock
-        RosShamp4(),
         Rodas4(),
         Rodas4P(),
         Rodas5(),
@@ -128,14 +127,11 @@ for solver in (
         RadauIIA5(),
         # SDIRK
         ImplicitEuler(),
-        Trapezoid(),
         # MultiStep Methods
         QNDF(),
         QBDF1(),
-        ABDF2(),
         QNDF2(),
         QBDF2(),
-        QNDF(),
         QBDF(),
         FBDF(),
     ), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7)
@@ -168,7 +164,7 @@ for solver in (
     catch e
         @error("meh")
     finally
-        push!(gen_trip_speed_results,
+        push!(line_trip_speed_results,
             (solver_name, linear_solver, max_error, rmse, tol, solve_time, step_count, state_error)
         )
     end
