@@ -31,7 +31,7 @@ sim_diffeq_high_tol = Simulation(
     system,
     pwd(),
     (0.0, 10.0), #time span
-    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "GFM_Battery_31"));
+    GeneratorTrip(1.0, get_component(DynamicInverter, system, "GFM_Battery_31"));
     sim_config...
 )
 
@@ -47,7 +47,7 @@ sim_ida = Simulation(
     system,
     mktempdir(),
     (0.0, 10.0), #time span
-    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "GFM_Battery_31"));
+    GeneratorTrip(1.0, get_component(DynamicInverter, system, "GFM_Battery_31"));
     sim_config...
 )
 
@@ -74,7 +74,7 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
             system,
             pwd(),
             (0.0, 10.0), #time span
-            GeneratorTrip(1.0, get_component(DynamicGenerator, system, "GFM_Battery_31"));
+            GeneratorTrip(1.0, get_component(DynamicInverter, system, "GFM_Battery_31"));
             sim_config...
         )
 
@@ -104,7 +104,7 @@ sim = Simulation(
     system,
     pwd(),
     (0.0, 10.0), #time span
-    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "GFM_Battery_31"));
+    GeneratorTrip(1.0, get_component(DynamicInverter, system, "GFM_Battery_31"));
     sim_config...
 )
 
@@ -148,7 +148,7 @@ for solver in (
             system,
             pwd(),
             (0.0, 10.0), #time span
-            GeneratorTrip(1.0, get_component(DynamicGenerator, system, "GFM_Battery_31"));
+            GeneratorTrip(1.0, get_component(DynamicInverter, system, "GFM_Battery_31"));
             sim_config...
         )
 
