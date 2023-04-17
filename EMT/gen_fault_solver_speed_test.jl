@@ -16,17 +16,13 @@ using PrettyTables
 
 include("../utils.jl")
 
-system = System("PSSE/data/PSCAD_VALIDATION_RAW.raw", "PSSE/data/PSCAD_VALIDATION_DYR.dyr";
-    bus_name_formatter=x -> strip(string(x["name"])) * "-" * string(x["index"]), runchecks=false)
-
-for l in get_components(StandardLoad, system)
-    transform_load_to_constant_impedance(l)
-end
+system = System("EMT/data/144Bus.json")
 
 sim_config = Dict{Symbol,Any}(
     :file_level => Logging.Error,
     :console_level => Logging.Error,
     :system_to_file => false,
+    :all_lines_dynamic => true,
 )
 
 # Get high tolerance results
@@ -35,11 +31,14 @@ sim_diffeq_high_tol = Simulation(
     system,
     pwd(),
     (0.0, 10.0), #time span
-    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
+    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-3-Trip"));
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-3, abstol=1e-8, reltol=1e-8,)
+execute!(sim_diffeq_high_tol, Rodas5P();
+    #dtmax = 1e-3,
+    abstol=1e-8,
+    reltol=1e-8,)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 # Precompilation run
@@ -48,7 +47,7 @@ sim_ida = Simulation(
     system,
     mktempdir(),
     (0.0, 10.0), #time span
-    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
+    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-3-Trip"));
     sim_config...
 )
 
@@ -63,7 +62,7 @@ gen_trip_speed_results = DataFrame(solver=String[],
     step_count=Int[],
     max_error_state=Tuple{String,Symbol}[],)
 
-for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7)
+for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8)
     solve_time = "failed"
     solver_name, solver_meta = split("$(solver)", "{")
     linear_solver = split(solver_meta, ",")[1]
@@ -75,7 +74,7 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
             system,
             pwd(),
             (0.0, 10.0), #time span
-            GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
+            GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-3-Trip"));
             sim_config...
         )
 
@@ -105,7 +104,7 @@ sim = Simulation(
     system,
     pwd(),
     (0.0, 10.0), #time span
-    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
+    GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-3-Trip"));
     sim_config...
 )
 
@@ -137,7 +136,7 @@ for solver in (
         QBDF2(),
         QBDF(),
         FBDF(),
-    ), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7)
+    ), tol in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8)
     solve_time = "failed"
     solver_name, solver_meta = split("$(solver)", "{")
     linear_solver = split(solver_meta, ",")[1]
@@ -149,7 +148,7 @@ for solver in (
             system,
             pwd(),
             (0.0, 10.0), #time span
-            GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-1431-N"));
+            GeneratorTrip(1.0, get_component(DynamicGenerator, system, "generator-3-Trip"));
             sim_config...
         )
 
@@ -173,11 +172,11 @@ for solver in (
     end
 end
 
-readme_text = read("PSSE/README.md", String)
+readme_text = read("EMT/README.md", String)
 
 val_ini = findnext("## Solver comparison gen trip", readme_text, 1)[end]
 
-open("PSSE/README.md", "w") do f
+open("EMT/README.md", "w") do f
     write(f, readme_text[1:val_ini])
     write(f, "\n\n")
     pretty_table(f, gen_trip_speed_results, tf=tf_markdown)

@@ -13,7 +13,7 @@ using DataFrames
 using LinearAlgebra
 using PrettyTables
 
-include("utils.jl")
+include("../utils.jl")
 
 system = System("PSSE/data/PSCAD_VALIDATION_RAW.raw", "PSSE/data/PSCAD_VALIDATION_DYR.dyr";
     bus_name_formatter=x -> strip(string(x["name"])) * "-" * string(x["index"]), runchecks=false)
