@@ -51,7 +51,7 @@ sim_ida = Simulation(
     sim_config...
 )
 
-execute!(sim_ida, IDA(); abstol=1e-2, reltol=1e-2, enable_progress_bar=false)
+execute!(sim_ida, IDA(); dtmax = 1e-3, abstol=1e-2, reltol=1e-2, enable_progress_bar=false)
 
 gen_trip_speed_results = DataFrame(solver=String[],
     LinearSolver=String[],

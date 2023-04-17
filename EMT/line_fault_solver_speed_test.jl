@@ -43,7 +43,7 @@ sim_diffeq_high_tol = Simulation(
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); abstol=1e-8, reltol=1e-8, enable_progress_bar=true)
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-3, abstol=1e-8, reltol=1e-8, enable_progress_bar=true)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 sim_high_tol = Simulation(
