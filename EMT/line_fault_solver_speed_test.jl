@@ -91,8 +91,8 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
         ti, vali = get_state_series(sim_diffeq_high_tol_res, state_error)
         df_res = DataFrame(t=tr, state=valr)
         df_base = DataFrame(t=ti, state=vali)
-        CSV.write("res_line_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_res)
-        CSV.write("base_line_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_base)
+        CSV.write("EMT/res_line_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_res)
+        CSV.write("EMT/base_line_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_base)
     catch e
         @error("meh")
     finally
@@ -165,8 +165,8 @@ for solver in (
         ti, vali = get_state_series(sim_diffeq_high_tol_res, state_error)
         df_res = DataFrame(t=tr, state=valr)
         df_base = DataFrame(t=ti, state=vali)
-        CSV.write("res_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_res)
-        CSV.write("base_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_base)
+        CSV.write("EMT/res_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_res)
+        CSV.write("EMT/base_$(solver_name)_$(state_error[1])_$(state_error[2])_$(linear_solver)_$(tol).csv", df_base)
     catch e
         @error("meh")
     finally
