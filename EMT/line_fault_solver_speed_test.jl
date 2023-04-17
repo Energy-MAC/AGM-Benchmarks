@@ -100,7 +100,6 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
             (solver_name, linear_solver, max_error, rmse, tol, solve_time, step_count, state_error)
         )
     end
-    break
 end
 
 # Precompilation run
@@ -174,7 +173,6 @@ for solver in (
             (solver_name, linear_solver, max_error, rmse, tol, solve_time, step_count, state_error)
         )
     end
-    break
 end
 
 readme_text = read("EMT/README.md", String)
