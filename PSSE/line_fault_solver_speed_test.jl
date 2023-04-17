@@ -15,7 +15,12 @@ using PrettyTables
 
 include("../utils.jl")
 
-system = System("EMT/data/144Bus.json")
+system = System("PSSE/data/PSCAD_VALIDATION_RAW.raw", "PSSE/data/PSCAD_VALIDATION_DYR.dyr";
+    bus_name_formatter=x -> strip(string(x["name"])) * "-" * string(x["index"]), runchecks=false)
+
+for l in get_components(StandardLoad, system)
+    transform_load_to_constant_impedance(l)
+end
 
 sim_config = Dict{Symbol,Any}(
     :file_level => Logging.Error,
@@ -23,27 +28,17 @@ sim_config = Dict{Symbol,Any}(
     :system_to_file => false,
 )
 
-trip_line = "Bus_79-Bus_76-i_1"
-
-for l in get_components(Line, system)
-    if get_name(l) == trip_line
-        continue
-    end
-    dyn_branch = DynamicBranch(l)
-    add_component!(system, dyn_branch)
-end
-
 # Get high tolerance results
 sim_diffeq_high_tol = Simulation(
     MassMatrixModel,
     system,
     pwd(),
     (0.0, 10.0), #time span
-    BranchTrip(1.0, Line, trip_line);
+    BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
     sim_config...
 )
 
-execute!(sim_diffeq_high_tol, Rodas5P(); abstol=1e-8, reltol=1e-8, enable_progress_bar=true)
+execute!(sim_diffeq_high_tol, Rodas5P(); dtmax = 1e-3, abstol=1e-8, reltol=1e-8, enable_progress_bar=false)
 sim_diffeq_high_tol_res = read_results(sim_diffeq_high_tol)
 
 sim_high_tol = Simulation(
@@ -51,7 +46,7 @@ sim_high_tol = Simulation(
     system,
     mktempdir(),
     (0.0, 10.0), #time span
-    BranchTrip(1.0, Line, trip_line);
+    BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
     sim_config...
 )
 
@@ -78,7 +73,7 @@ for solver in (IDA(), IDA(linear_solver=:LapackDense), IDA(linear_solver=:KLU)),
             system,
             pwd(),
             (0.0, 10.0), #time span
-            BranchTrip(1.0, Line, trip_line);
+            BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
             sim_config...
         )
 
@@ -108,7 +103,7 @@ sim = Simulation(
     system,
     pwd(),
     (0.0, 10.0), #time span
-    BranchTrip(1.0, Line, trip_line);
+    BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
     sim_config...
 )
 
@@ -151,7 +146,7 @@ for solver in (
             system,
             pwd(),
             (0.0, 10.0), #time span
-            BranchTrip(1.0, Line, trip_line);
+            BranchTrip(1.0, Line, "CORONADO-1101-PALOVRDE-1401-i_2");
             sim_config...
         )
 
@@ -175,12 +170,12 @@ for solver in (
     end
 end
 
-readme_text = read("EMT/README.md", String)
+readme_text = read("PSSE/README.md", String)
 
 val_ini = findnext("## Solver comparison line trip", readme_text, 1)[end]
 val_end = findnext("## Solver comparison gen trip", readme_text, 1)[1]
 
-open("EMT/README.md", "w") do f
+open("PSSE/README.md", "w") do f
     write(f, readme_text[1:val_ini])
     write(f, "\n\n")
     pretty_table(f, line_trip_speed_results, tf=tf_markdown)
